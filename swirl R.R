@@ -1,0 +1,47 @@
+##learning basic dplyr functions using swirl
+#installing packages
+library(swirl)
+packageVersion("swirl")
+install_from_swirl("Getting and Cleaning Data")
+swirl()
+library(dplyr)
+packageVersion("dplyr")
+cran
+#reading dataset
+mydf<-read.csv(path2csv,stringsAsFactors = FALSE)
+mydf
+dim(mydf)
+head(mydf)
+#creating tibble
+cran <- tbl_df(mydf)
+rm("mydf")
+cran
+#select()
+select(cran, ip_id, package, country)
+select(cran,r_arch:country)
+select(cran,country:r_arch)
+select(cran, -time)
+select(cran,-(X:size))
+#filter()
+filter(cran, package == "swirl") 
+filter(cran, r_version == "3.1.1", country == "US") 
+filter(cran, r_version <= "3.0.2", country == "IN")
+filter(cran,country=="IN" | country=="US")
+filter(cran,size>100500,r_os=="linux-gnu")
+filter(cran,!is.na(r_version))
+#arrange()
+cran2<-select(cran,size:ip_id)
+arrange(cran2,ip_id)
+arrange(cran2,desc(ip_id))
+arrange(cran2,package,ip_id)
+arrange(cran2,country,desc(r_version),ip_id)
+#mutate()
+cran3<-select(cran,ip_id,package,size)
+mutate(cran3, size_mb = size / 2^20,size_gb = size_mb / 2^10)
+mutate(cran3,correct_size = size+1000)
+#summarise()
+summarize(cran,avg_bytes = mean(size))
+#group_by()
+by_package<-group_by(cran,package)
+by_package
+summarize(by_package,mean(size))
